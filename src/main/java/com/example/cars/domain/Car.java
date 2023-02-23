@@ -15,4 +15,9 @@ public class Car {
     private String name;
     private String description;
     private String category;
+    private String description;
+    private String photoUrl;
+    private String videoUrl;
+    private String latitude;
+    private String longitude;
 }
