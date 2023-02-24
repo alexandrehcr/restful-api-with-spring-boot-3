@@ -3,6 +3,7 @@ package com.example.cars;
 import com.example.cars.domain.Car;
 import com.example.cars.domain.CarsService;
 import com.example.cars.domain.dto.CarDTO;
+import com.example.cars.domain.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -36,17 +36,21 @@ class ServiceTests {
 		assertNotNull(id);
 
 		// Retrieve the object through its assigned ID
-		Optional<CarDTO> optional = service.getById(id);
-		assertTrue(optional.isPresent());
+		carDTO = service.getById(id);
+		assertNotNull(carDTO);
 
 		// Compare if the data added is what was intended to be.
-		carDTO = optional.get();
 		assertEquals("Ferrari", carDTO.getName());
 		assertEquals("sportive", carDTO.getCategory());
 
-		// Verifies if the object was deleted
+		// Delete generated object and check deletion
 		service.deleteById(id);
-		assertFalse(service.getById(id).isPresent());
+		try {
+			service.getById(id);
+			fail("Car was not deleted.");
+		} catch (ObjectNotFoundException e) {
+			// ok
+		}
 	}
 
 	@Test
@@ -57,11 +61,9 @@ class ServiceTests {
 
 	@Test
 	public void getTest() {
-		Optional<CarDTO> optional = service.getById(11L);
-		assertTrue(optional.isPresent());
-
-		CarDTO car = optional.get();
-		assertEquals("Ferrari FF", car.getName());
+		CarDTO carDTO = service.getById(11L);
+		assertNotNull(carDTO);
+		assertEquals("Ferrari FF", carDTO.getName());
 	}
 
 	@Test

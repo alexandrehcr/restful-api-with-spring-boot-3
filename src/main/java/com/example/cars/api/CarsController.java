@@ -5,12 +5,12 @@ import com.example.cars.domain.CarsService;
 import com.example.cars.domain.dto.CarDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cars")
@@ -20,13 +20,14 @@ public class CarsController {
 
     @GetMapping
     public ResponseEntity<List<CarDTO>> getAll(){
-        return ResponseEntity.ok(service.getCars());
+        List<CarDTO> list = service.getCars();
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CarDTO> getById(@PathVariable("id") Long id) {
-        Optional<CarDTO> optional = service.getById(id);
-        return optional.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        CarDTO carDTO = service.getById(id);
+        return ResponseEntity.ok(carDTO);
     }
 
     @GetMapping("/category/{category}")
@@ -39,21 +40,20 @@ public class CarsController {
     }
 
     @PostMapping
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<Void> post(@RequestBody Car car){
-        try {
-            CarDTO createdCar = service.insert(car);
-            URI location = getUri(createdCar.getId());
-            return ResponseEntity.created(location).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        CarDTO createdCar = service.insert(car);
+        URI location = getUri(createdCar.getId());
+        return ResponseEntity.created(location).build();
     }
 
     private URI getUri(Long id) {
         return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
     }
 
+
     @PutMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<CarDTO> put(@PathVariable("id") Long id, @RequestBody Car car) {
         car.setId(id);
         CarDTO updatedCar = service.update(id, car);
@@ -64,9 +64,9 @@ public class CarsController {
     }
 
     @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        return service.deleteById(id) ?
-                ResponseEntity.ok().build() :
-                ResponseEntity.notFound().build();
+        service.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

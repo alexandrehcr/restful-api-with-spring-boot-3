@@ -1,8 +1,8 @@
 package com.example.cars.domain;
 
 import com.example.cars.domain.dto.CarDTO;
+import com.example.cars.domain.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -18,8 +18,9 @@ public class CarsService {
         return repository.findAll().stream().map(CarDTO::create).toList();
     }
 
-    public Optional<CarDTO> getById(Long id) {
-        return repository.findById(id).map(CarDTO::create);
+    public CarDTO getById(Long id) {
+        return repository.findById(id).map(CarDTO::create)
+                .orElseThrow(() -> new ObjectNotFoundException("Could not find car."));
     }
 
     public List<CarDTO> getByCategory(String category) {
@@ -60,13 +61,7 @@ public class CarsService {
         }
     }
 
-    public boolean deleteById(Long id) {
-        try{
-            repository.deleteById(id);
-            return true;
-        } catch (EmptyResultDataAccessException e) {
-            return false;
-            // Custom exception will be placed later
-        }
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 }
