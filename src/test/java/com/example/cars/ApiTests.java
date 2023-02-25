@@ -25,13 +25,14 @@ public class ApiTests {
     @Autowired
     protected TestRestTemplate rest;
 
+
     // Auxiliary methods
     private ResponseEntity<CarDTO> getCar(String url) {
-        return rest.getForEntity(url, CarDTO.class);
+        return rest.withBasicAuth("user", "user").getForEntity(url, CarDTO.class);
     }
 
     private ResponseEntity<List<CarDTO>> getCars(String url) {
-        return rest.exchange(url, HttpMethod.GET, null,
+        return rest.withBasicAuth("user", "user").exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<CarDTO>>() {});
     }
 
@@ -79,7 +80,7 @@ public class ApiTests {
         car.setCategory("sportive");
 
         // Test post
-        ResponseEntity<Void> postResponse =  rest.postForEntity("/api/cars", car, null);
+        ResponseEntity<Void> postResponse = rest.withBasicAuth("admin", "admin").postForEntity("/api/cars", car, null);
         assertEquals(HttpStatus.CREATED, postResponse.getStatusCode(), "Status mismatch for save entity");
         System.out.println(postResponse);
 
@@ -93,7 +94,7 @@ public class ApiTests {
                 "Category mismatch between created and retrieved car");
 
         // Delete created object
-        rest.delete(location);
+        rest.withBasicAuth("admin", "admin").delete(location);
         // Verify delete
         assertEquals(HttpStatus.NOT_FOUND, getCar(location).getStatusCode(),
                 "Status mismatch when trying to delete entity");

@@ -30,3 +30,11 @@ INSERT INTO cars (name,description,category) VALUES ('Koenigsegg CCX','Descripti
 INSERT INTO cars (name,description,category) VALUES ('Mercedes SLR McLaren','Description of Mercedes SLR McLaren','luxury');
 INSERT INTO cars (name,description,category) VALUES ('Rolls Royce Phantom','Description of Rolls Royce Phantom','luxury');
 INSERT INTO cars (name,description,category) VALUES ('Lexus LFA','Description of Lexus LFA','luxury');
+
+
+INSERT INTO roles (id, name) VALUES (1,'ROLE_ADMIN'),(2,'ROLE_USER');
+
+INSERT INTO users (id, email, login, name, password) VALUES (1,NULL,'admin','admin','$2a$10$sHI5fBdkr74hT9itoQy45eaHLl066MtgvoDavHtKVhoEAanXr81Tq');
+INSERT INTO users (id, email, login, name, password) VALUES (2,NULL,'user','user','$2a$10$dCNBHbBeoOuJktp9CUd.1eZaQg.RiHlFgpr0MZhuOlgX1Bf1w6PMi');
+
+INSERT INTO user_roles (user_id, role_id) VALUES (1,1),(2,2);
