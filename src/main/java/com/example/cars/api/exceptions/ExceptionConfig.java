@@ -1,17 +1,18 @@
 package com.example.cars.api.exceptions;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.*;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.io.Serializable;
+import java.util.Arrays;
 
 @RestControllerAdvice
+
 public class ExceptionConfig extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
@@ -30,50 +31,18 @@ public class ExceptionConfig extends ResponseEntityExceptionHandler {
 
     @Override
     public ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-                .body(new CustomProblemDetail(ex.getBody()));
+        ProblemDetail problemDetail = ProblemDetail.forStatus(status);
+        problemDetail.setDetail("Supported methods: " + Arrays.toString(ex.getSupportedMethods()));
+        return ResponseEntity.status(status).body(problemDetail);
     }
 
-
-
-    @JsonInclude(value = JsonInclude.Include.NON_NULL)
-    protected static class CustomProblemDetail implements Serializable {
-        private int status;
-        private String title;
-        private String detail;
-        private String message;
-
-        protected CustomProblemDetail(String message) {
-            this.message = message;
-        }
-
-        protected CustomProblemDetail(ProblemDetail problemDetail) {
-            status = problemDetail.getStatus();
-            detail = problemDetail.getDetail();
-            title = problemDetail.getTitle();
-        }
-
-        protected CustomProblemDetail(ProblemDetail problemDetail, String message) {
-            status = problemDetail.getStatus();
-            title = problemDetail.getTitle();
-            detail = problemDetail.getDetail();
-            this.message = message;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getDetail() {
-            return detail;
-        }
-
-        public String getMessage() {
-            return message;
-        }
+    @ExceptionHandler({
+            org.springframework.security.access.AccessDeniedException.class
+    })
+    public ResponseEntity<Object> accessDenied(AccessDeniedException e) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, e.getMessage());
+        problemDetail.setProperty("message", "You must be a system administrator to perform this action.");
+        return ResponseEntity.status(status).body(problemDetail);
     }
 }
