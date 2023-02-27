@@ -1,4 +1,4 @@
-package com.example.cars.api.security;
+package com.example.cars.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

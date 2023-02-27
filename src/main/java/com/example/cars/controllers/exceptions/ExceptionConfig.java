@@ -1,4 +1,4 @@
-package com.example.cars.api.exceptions;
+package com.example.cars.controllers.exceptions;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.*;

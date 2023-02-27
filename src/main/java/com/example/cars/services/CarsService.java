@@ -1,7 +1,9 @@
-package com.example.cars.domain;
+package com.example.cars.services;
 
-import com.example.cars.domain.dto.CarDTO;
-import com.example.cars.domain.exceptions.ObjectNotFoundException;
+import com.example.cars.entities.dto.CarDTO;
+import com.example.cars.services.exceptions.ObjectNotFoundException;
+import com.example.cars.repositories.CarRepository;
+import com.example.cars.entities.Car;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;

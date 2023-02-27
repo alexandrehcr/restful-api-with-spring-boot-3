@@ -1,7 +1,7 @@
 package com.example.cars;
 
-import com.example.cars.domain.Car;
-import com.example.cars.domain.dto.CarDTO;
+import com.example.cars.entities.Car;
+import com.example.cars.entities.dto.CarDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

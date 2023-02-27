@@ -1,7 +1,7 @@
-package com.example.cars.api.security;
+package com.example.cars.security;
 
-import com.example.cars.domain.User;
-import com.example.cars.domain.UserRepository;
+import com.example.cars.entities.User;
+import com.example.cars.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

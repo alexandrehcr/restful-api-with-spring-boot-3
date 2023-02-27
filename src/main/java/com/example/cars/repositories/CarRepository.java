@@ -1,5 +1,6 @@
-package com.example.cars.domain;
+package com.example.cars.repositories;
 
+import com.example.cars.entities.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
